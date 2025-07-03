@@ -1,153 +1,3 @@
-<?php
-session_start();
-
-// DB connection
-$conn = new mysqli("localhost", "root", "", "pp_db");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$user_id = $_SESSION['user_id'] ?? null;
-$session_id = session_id();
-
-// Get cart items with product details
-$cart_query = "
-    SELECT c.*, p.name, p.price, p.image
-    FROM cart c
-    JOIN products p ON c.product_id = p.id
-    WHERE c.user_id = ? OR c.session_id = ?
-    ORDER BY c.id DESC
-";
-$stmt = $conn->prepare($cart_query);
-$stmt->bind_param("is", $user_id, $session_id);
-$stmt->execute();
-$cart_items = $stmt->get_result();
-
-// Redirect if cart is empty
-if ($cart_items->num_rows === 0) {
-    header("Location: cart.php");
-    exit;
-}
-
-// Compute totals
-$subtotal = 0;
-$total_items = 0;
-$cart_array = [];
-
-while ($item = $cart_items->fetch_assoc()) {
-    $item_total = $item['price'] * $item['quantity'];
-    $subtotal += $item_total;
-    $total_items += $item['quantity'];
-    $item['item_total'] = $item_total;
-    $cart_array[] = $item;
-}
-
-$shipping = $subtotal > 1000 ? 0 : 50; // Free shipping if subtotal > 1000
-$tax = $subtotal * 0.12;
-$total = $subtotal + $shipping + $tax;
-
-// Handle form submission
-$errors = [];
-
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['place_order'])) {
-    // Sanitize inputs
-    $customer_name = trim($_POST['customer_name']);
-    $email = trim($_POST['email']);
-    $phone = trim($_POST['phone']);
-    $address = trim($_POST['address']);
-    $city = trim($_POST['city']);
-    $postal_code = trim($_POST['postal_code']);
-    $payment_method = $_POST['payment_method'] ?? '';
-    $special_instructions = trim($_POST['special_instructions'] ?? '');
-
-    // Basic validation
-    if (!$customer_name) $errors[] = "Customer name is required";
-    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Valid email is required";
-    if (!$phone) $errors[] = "Phone number is required";
-    if (!$address) $errors[] = "Address is required";
-    if (!$city) $errors[] = "City is required";
-    if (!$postal_code) $errors[] = "Postal code is required";
-    if (!$payment_method) $errors[] = "Payment method is required";
-
-    if (empty($errors)) {
-        // Generate unique order number
-        $order_number = 'PP' . date('Ymd') . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
-
-        // Insert order
-        $insert_order = $conn->prepare("
-            INSERT INTO orders (
-                order_number, user_id, session_id, customer_name, email, phone,
-                address, city, postal_code, payment_method, special_instructions,
-                subtotal, shipping_fee, tax, total, status, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
-        ");
-
-        $insert_order->bind_param(
-            "sisssssssssdddd",
-            $order_number, $user_id, $session_id,
-            $customer_name, $email, $phone,
-            $address, $city, $postal_code,
-            $payment_method, $special_instructions,
-            $subtotal, $shipping, $tax, $total
-        );
-
-        if ($insert_order->execute()) {
-            $order_id = $conn->insert_id;
-
-            // Insert order items
-            $insert_item = $conn->prepare("
-                INSERT INTO order_items (order_id, product_id, quantity, price, total)
-                VALUES (?, ?, ?, ?, ?)
-            ");
-
-            foreach ($cart_array as $item) {
-                $insert_item->bind_param(
-                    "iiidd",
-                    $order_id,
-                    $item['product_id'],
-                    $item['quantity'],
-                    $item['price'],
-                    $item['item_total']
-                );
-                $insert_item->execute();
-            }
-
-            $insert_item->close();
-
-            // Clear cart
-            $clear_cart = $conn->prepare("DELETE FROM cart WHERE user_id = ? OR session_id = ?");
-            $clear_cart->bind_param("is", $user_id, $session_id);
-            $clear_cart->execute();
-            $clear_cart->close();
-
-            // Set session success message and redirect
-            $_SESSION['order_success'] = [
-                'order_number' => $order_number,
-                'total' => $total,
-                'email' => $email
-            ];
-
-            header("Location: order-confirmation.php");
-            exit;
-        } else {
-            $errors[] = "Failed to place order. Please try again later.";
-        }
-
-        $insert_order->close();
-    }
-}
-
-// Get cart count for UI badge
-$count_stmt = $conn->prepare("SELECT SUM(quantity) AS total FROM cart WHERE user_id = ? OR session_id = ?");
-$count_stmt->bind_param("is", $user_id, $session_id);
-$count_stmt->execute();
-$cart_count_result = $count_stmt->get_result();
-$cart_count = $cart_count_result->fetch_assoc()['total'] ?? 0;
-
-$count_stmt->close();
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -713,17 +563,17 @@ $conn->close();
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">
+                            <a class="nav-link active" href="index.html">
                                 <i class="fas fa-home"></i> Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="about.php">
+                            <a class="nav-link" href="about.html">
                                 <i class="fas fa-users"></i>About Us
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="products.php">
+                            <a class="nav-link" href="products.html">
                                 <i class="fas fa-tshirt"></i>What We Offer
                             </a>
                         </li>
@@ -733,13 +583,13 @@ $conn->close();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link cart-container" href="cart.php">
+                            <a class="nav-link cart-container" href="cart.html">
                                 <i class="fas fa-shopping-bag"></i>Cart
                                 <span class="cart-badge"><?= $cart_count ?></span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn special-btn nav-link px-3" href="login.php" role="button">
+                            <a class="btn special-btn nav-link px-3" href="login.html" role="button">
                                 <i class="fas fa-sign-in-alt"></i>Login
                             </a>
                         </li>
