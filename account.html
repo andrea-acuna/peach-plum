@@ -1,84 +1,3 @@
-<?php
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
-// Database connection
-$conn = new mysqli("localhost", "root", "", "pp_db");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$user_id = $_SESSION['user_id'];
-$session_id = session_id();
-
-if ($user_id) {
-    $stmt_fetch_guest_cart = $conn->prepare("SELECT product_id, quantity FROM cart WHERE session_id = ? AND user_id IS NULL");
-    $stmt_fetch_guest_cart->bind_param("s", $session_id);
-    $stmt_fetch_guest_cart->execute();
-    $guest_cart_result = $stmt_fetch_guest_cart->get_result();
-
-    if ($guest_cart_result->num_rows > 0) {
-        while ($guest_item = $guest_cart_result->fetch_assoc()) {
-            $product_id = $guest_item['product_id'];
-            $quantity = $guest_item['quantity'];
-
-            $stmt_check_user_cart = $conn->prepare("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?");
-            $stmt_check_user_cart->bind_param("ii", $user_id, $product_id);
-            $stmt_check_user_cart->execute();
-            $user_cart_item_result = $stmt_check_user_cart->get_result();
-
-            if ($user_cart_item_result->num_rows > 0) {
-                $stmt_update_user_cart = $conn->prepare("UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?");
-                $stmt_update_user_cart->bind_param("iii", $quantity, $user_id, $product_id);
-                $stmt_update_user_cart->execute();
-                $stmt_insert_user_cart = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
-                $stmt_insert_user_cart->bind_param("iii", $user_id, $product_id, $quantity);
-                $stmt_insert_user_cart->execute();
-            }
-        }
-        $stmt_delete_guest_cart = $conn->prepare("DELETE FROM cart WHERE session_id = ? AND user_id IS NULL");
-        $stmt_delete_guest_cart->bind_param("s", $session_id);
-        $stmt_delete_guest_cart->execute();
-    }
-}
-
-// Fetch user data from database
-$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result && $result->num_rows === 1) {
-    $user = $result->fetch_assoc();
-
-    $full_name = $user['full_name'];
-    $gender = $user['gender'];
-    $date_of_birth = $user['date_of_birth'];
-    $phone_number = $user['phone_number'];
-    $email = $user['email'];
-    $street = $user['street'];
-    $city = $user['city'];
-    $province_state = $user['province_state'];
-    $zip_code = $user['zip_code'];
-    $country = $user['country'];
-    $username = $user['username'];
-} else {
-    echo "User not found.";
-    exit();
-}
-
-$stmt = $conn->prepare("SELECT SUM(quantity) AS total FROM cart WHERE user_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$cart_count = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
-
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -483,41 +402,41 @@ $conn->close();
                 <a class="navbar-brand logo" href="index.php">
                     Peach & Plum
                 </a>
-
+                
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <i class="fas fa-bars"></i>
                 </button>
-
+                
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">
+                            <a class="nav-link active" href="index.html">
                                 <i class="fas fa-home"></i> Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="about.php">
+                            <a class="nav-link" href="about.html">
                                 <i class="fas fa-users"></i>About Us
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="products.php">
+                            <a class="nav-link" href="products.html">
                                 <i class="fas fa-tshirt"></i>What We Offer
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="account.php">
+                            <a class="nav-link" href="account.php">
                                 <i class="fas fa-user"></i>Account
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link cart-container" href="cart.php">
+                            <a class="nav-link cart-container" href="cart.html">
                                 <i class="fas fa-shopping-bag"></i>Cart
                                 <span class="cart-badge"><?= $cart_count ?></span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn special-btn nav-link px-3" href="login.php" role="button">
+                            <a class="btn special-btn nav-link px-3" href="login.html" role="button">
                                 <i class="fas fa-sign-in-alt"></i>Login
                             </a>
                         </li>
