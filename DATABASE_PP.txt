@@ -1,0 +1,142 @@
+CREATE TABLE products (
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    image VARCHAR(255),
+    date_added DATE,
+    recommended INT(11) DEFAULT 0
+);
+
+INSERT INTO products (name, description, price, image, date_added, recommended)
+VALUES
+('Floral Maxi Dress', 'Embrace elegance with our stunning floral maxi dress. Made from breathable fabric, it features a flowy silhouette, adjustable straps, and a beautiful print perfect for spring and summer occasions.', 2499, 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', CURDATE(), 1),
+('Oversized Graphic Tee', 'Achieve effortless cool with our oversized graphic tee. Crafted from soft cotton, it offers a relaxed fit and a unique print that adds an edgy touch to any casual outfit.', 899, 'https://media.boohoo.com/i/boohoo/tzz00355_black_xl?w=900&qlt=default&fmt.jp2.qlt=70&fmt=auto&sm=fit', CURDATE(), 1),
+('Tailored Blazer', 'Elevate your professional and casual looks with our perfectly tailored blazer. Featuring a classic cut and premium fabric, it provides a sophisticated and sharp silhouette.', 3899, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFwZYFeEbmqLhPCCgNnayutS8O6AErLPIYCQ&s', CURDATE(), 1),
+('Satin Blouse', 'Drape yourself in luxury with our soft satin blouse. Its smooth texture and elegant drape make it ideal for both office wear and evening outings.', 1299, 'https://image.uniqlo.com/UQ/ST3/ph/imagesgoods/466337/item/phgoods_32_466337_3x4.jpg?width=494', CURDATE(), 1),
+('High-Waisted Jeans', 'Flatter your figure with our high-waisted jeans. Designed for comfort and style, they offer a perfect fit and a versatile look.', 1899, 'https://i5.walmartimages.com/asr/b0397216-fdde-41dc-9bcd-7ba7edb2c665.e44613ad4b6a30a1013d65875470d1b7.jpeg', CURDATE(), 1),
+('Boho Midi Skirt', 'Channel your inner free spirit with our boho midi skirt. Its lightweight fabric and flowing design provide ultimate comfort.', 1599, 'https://m.media-amazon.com/images/I/814RHkTVRZL._UY350_.jpg', CURDATE(), 1),
+('Silk Camisole', 'Indulge in the luxurious feel of our pure silk camisole. This delicate top is perfect for layering or wearing on its own.', 1799, 'https://shopravella.com/cdn/shop/products/RavellaCapriSilkCami-ProseccoGold1500_740x.jpg?v=1747515091', CURDATE(), 1),
+('Wrap Midi Dress', 'Flattering and fashionable, our wrap midi dress offers a customizable fit and an elegant drape.', 2199, 'https://i.pinimg.com/736x/ac/a1/24/aca124e00217974777a61ff60ba017b4.jpg', CURDATE(), 1),
+('Cropped Cardigan', 'Stay cozy and chic with our soft cropped cardigan. Ideal for layering over dresses or tops.', 1399, 'https://i.pinimg.com/736x/53/4c/6b/534c6b5882d460da6e9d36f4aa03b55e.jpg', CURDATE(), 1),
+('Pleated Mini Skirt', 'Add a playful touch to your wardrobe with our stylish pleated mini skirt. Its flattering design makes it perfect for a fun day out.', 999, 'https://i.pinimg.com/736x/58/60/c1/5860c16357ffd4d2b1c3daa8aa48f383.jpg', CURDATE(), 1),
+('Classic Trench Coat', 'Timeless and versatile, our classic trench coat is crafted from water-resistant fabric, featuring a belted waist and double-breasted buttons.', 4999, 'https://i.pinimg.com/736x/20/44/6e/20446eebab610e09c7582422be564d7a.jpg', CURDATE(), 1),
+('Ribbed Knit Sweater', 'Stay cozy with our ribbed knit sweater. Made from soft yarn with a flattering fit.', 1399, 'https://i.pinimg.com/736x/9b/24/33/9b243332b90fc21187d1d328740fc5a8.jpg', CURDATE(), 1),
+('Denim Jacket', 'A casual essential, our denim jacket features durable cotton fabric and functional pockets.', 2499, 'https://i.pinimg.com/736x/5e/a3/71/5ea3715dbd5a1eaa4ec03cb7cf04e7ef.jpg', CURDATE(), 1),
+('Wrap Front Jumpsuit', 'Effortlessly stylish, this wrap front jumpsuit features a cinched waist and wide legs for a flattering silhouette.', 2999, 'https://i.pinimg.com/736x/94/72/c9/9472c9dec9057deba653e9729a3687bc.jpg', CURDATE(), 1),
+('Cotton Button-Up Shirt', 'A versatile cotton button-up shirt with a relaxed fit. Perfect for office or casual wear.', 1199, 'https://i.pinimg.com/736x/cf/6f/8e/cf6f8e3969ecee7ca34382569b8859f7.jpg', CURDATE(), 0),
+('Wide-Leg Linen Pants', 'Lightweight and breathable linen pants with a wide-leg cut. Perfect for summer days.', 2099, 'https://i.pinimg.com/736x/4a/1b/0b/4a1b0bf907fb1ff3ba7da98b1d41bcbe.jpg', CURDATE(), 1),
+('Velvet Slip Dress', 'Luxurious velvet slip dress with a sleek silhouette and adjustable straps. Perfect for elegant evenings.', 2799, 'https://i.pinimg.com/736x/50/f6/27/50f62733afc801e5789ff1d2cf12653b.jpg', CURDATE(), 1),
+('Chunky Knit Scarf', 'Keep warm and stylish with our chunky knit scarf made from soft wool blend.', 799, 'https://i.pinimg.com/736x/65/3d/73/653d7327fb6db47efc06dfc2aad3b955.jpg', CURDATE(), 0),
+('Leather Ankle Boots', 'Premium leather ankle boots with a sturdy heel and comfortable fit. Ideal for fall and winter fashion.', 4599, 'https://i.pinimg.com/736x/88/09/1b/88091b0fb4f6b267ad49f2e43824214d.jpg', CURDATE(), 1),
+('Floral Print Kimono', 'Light and breezy floral print kimono with wide sleeves. Great for layering over casual outfits.', 1799, 'https://i.pinimg.com/736x/3c/3d/66/3c3d66d78e072301bbcd2de5932ff549.jpg', CURDATE(), 1);
+
+CREATE TABLE cart (
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) DEFAULT NULL,
+    session_id VARCHAR(128) NOT NULL,
+    product_id INT(11) NOT NULL,
+    quantity INT(11) NOT NULL DEFAULT 1,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Foreign key constraint to link to the Product table
+    CONSTRAINT fk_cart_product
+        FOREIGN KEY (product_id)
+        REFERENCES Products(id)
+        ON DELETE CASCADE
+);
+
+-- Orders table
+CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(50) NOT NULL UNIQUE,
+    user_id INT NULL,
+    session_id VARCHAR(255) NULL,
+    customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    special_instructions TEXT,
+    
+    subtotal DECIMAL(10, 2) NOT NULL,
+    shipping_fee DECIMAL(10, 2) NOT NULL,
+    tax DECIMAL(10, 2) NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    
+    status VARCHAR(20) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Order Items table
+CREATE TABLE IF NOT EXISTS order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    gender ENUM('male', 'female', 'other', 'prefer_not_to_say') NOT NULL,
+    date_of_birth DATE NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    
+    street VARCHAR(100) NOT NULL,
+    city VARCHAR(50) NOT NULL,
+    province_state VARCHAR(50) NOT NULL,
+    zip_code VARCHAR(10) NOT NULL,
+    country VARCHAR(50) NOT NULL,
+    
+    username VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL, -- hashed if you plan to store securely
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(50) NOT NULL UNIQUE,
+    user_id INT(11) DEFAULT NULL,
+    session_id VARCHAR(128) NOT NULL,
+    
+    customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    city VARCHAR(50) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    special_instructions TEXT,
+
+    subtotal DECIMAL(10,2) NOT NULL,
+    shipping_fee DECIMAL(10,2) NOT NULL,
+    tax DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+
+    status VARCHAR(50) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    order_id INT(11) NOT NULL,
+    product_id INT(11) NOT NULL,
+    quantity INT(11) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+Integ@123
